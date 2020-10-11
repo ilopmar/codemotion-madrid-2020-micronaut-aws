@@ -44,7 +44,7 @@ dependencies {
 
 test.classpath += configurations.developmentOnly
 
-mainClassName = "com.example.BookLambdaRuntime"
+mainClassName = "com.example.JokeLambdaRuntime"
 
 // use JUnit 5 platform
 test {
