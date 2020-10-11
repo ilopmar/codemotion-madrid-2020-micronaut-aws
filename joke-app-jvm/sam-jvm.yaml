@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Lambda Micronaut APP
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+Resources:
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: io.micronaut.function.aws.proxy.MicronautLambdaHandler
+      Runtime: java11
+      CodeUri: build/libs/joke-app-jvm-0.1-all.jar
+      MemorySize: 512
+      Policies: AWSLambdaVPCAccessExecutionRole
+      Tracing: Active
+      Timeout: 15
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+
+Outputs:
+  MicronautJVMServiceApi:
+    Description: URL for application
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod'
+    Export:
+      Name: MicronautJVMServiceApi

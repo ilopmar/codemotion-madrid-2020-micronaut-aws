@@ -1,10 +1,26 @@
-## Handler
+# Micronaut APP deployed as AWS Lambda with Proxy Gateway
 
-[AWS Lambda Handler](https://docs.aws.amazon.com/lambda/latest/dg/java-handler.html)
+It is possible to deploy the function manually (see [`joke-function-jvm` README](https://github.com/ilopmar/codemotion-madrid-2020-micronaut-aws/blob/master/joke-function-jvm/README.md))
+but then you also need to create the AWS Gateway Proxy manually.
+It is easier to do it using Cloud Formation:
 
-Handler: io.micronaut.function.aws.proxy.MicronautLambdaHandler
 
-## Feature aws-lambda documentation
+```shell script
+export S3_BUCKET=USE-YOUR-OWN-BUCKET
+export STACK_NAME=USE-YOUR-OWN-STACK-NAME
+export AWS_ACCESS_KEY_ID=xxxxx
+export AWS_SECRET_ACCESS_KEY=xxxx
+export AWS_DEFAULT_REGION=eu-central-1
 
-- [Micronaut AWS Lambda Function documentation](https://micronaut-projects.github.io/micronaut-aws/latest/guide/index.html#lambda)
+./gradlew shadowJar
+aws cloudformation package --template-file sam-jvm.yaml --output-template-file build/output-sam.yaml --s3-bucket $S3_BUCKET
+aws cloudformation deploy --template-file build/output-sam.yaml --stack-name $STACK_NAME --capabilities CAPABILITY_IAM
 
+API_ENDPOINT=`aws cloudformation describe-stacks --stack-name $STACK_NAME | jq -r '.Stacks[0] .Outputs[0] .OutputValue'`
+
+curl $API_ENDPOINT/jokes/category/nerdy
+curl $API_ENDPOINT/jokes/566
+
+# To delete everything
+aws cloudformation delete-stack --stack-name $STACK_NAME
+```
