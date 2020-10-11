@@ -1,10 +1,14 @@
-## Handler
+# Micronaut Function JVM
 
-[AWS Lambda Handler](https://docs.aws.amazon.com/lambda/latest/dg/java-handler.html)
+## Create the application
 
-Handler: com.example.BookRequestHandler
+```shell script
+mn create-function-app com.example.joke --features=aws-lambda --jdk 11 --test spock
+```
 
-## Feature aws-lambda documentation
+## Deploy to AWS
 
-- [Micronaut AWS Lambda Function documentation](https://micronaut-projects.github.io/micronaut-aws/latest/guide/index.html#lambda)
-
+- Create fatjar: `./gradlew shadowJar`
+- Create a new AWS Lambda function using Java 11 (Corretto)
+- Define handler `com.example.JokeRequestHandler::execute`
+- Create test event: `{"category":"nerdy"}`
