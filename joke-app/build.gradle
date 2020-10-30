@@ -21,6 +21,20 @@ micronaut {
     }
 }
 
+configurations {
+    all {
+        resolutionStrategy {
+            eachDependency { DependencyResolveDetails details ->
+                // Only needed at this moment because Micronaut 2.1.2 doesn't include this version in the BOM and
+                // this version improved the cold start approximately 25%
+                if (details.requested.group == 'io.micronaut.aws') {
+                    details.useVersion '2.2.2'
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut:micronaut-runtime")
